@@ -26,7 +26,7 @@
     body {
       background: var(--background-light);
       margin: 0;
-      padding: 0 0 80px; /* নিচের নেভিগেশন বারের জন্য প্যাডিং */
+      padding: 0 0 80px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -42,10 +42,6 @@
       padding: 30px;
       border-radius: 20px;
       box-shadow: var(--shadow-md);
-      transition: transform 0.3s ease-in-out;
-    }
-    .dashboard-card:hover {
-        transform: translateY(-5px);
     }
     .header {
       text-align: center;
@@ -130,7 +126,7 @@
     .footer strong {
         color: var(--text-color-dark);
     }
-    /* নতুন নেভিগেশন বারের স্টাইল */
+    /* Bottom Navigation Bar */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -173,9 +169,25 @@
     <h2>🔐 SafeEarn Dashboard</h2>
   </div>
 
-  <div class="input-group">
-    <input type="text" id="userId" placeholder="Enter your Telegram ID">
-    <button onclick="register()">🚀 Register</button>
+  <div id="registrationForm" class="form-section">
+    <div class="input-group">
+      <input type="text" id="fullName" placeholder="Full Name">
+    </div>
+    <div class="input-group">
+      <input type="text" id="telegramUser" placeholder="Telegram User Name">
+    </div>
+    <div class="input-group" id="emailStep">
+      <input type="email" id="userGmail" placeholder="Gmail">
+      <button onclick="sendVerificationCode()">Send Code</button>
+    </div>
+    <div class="input-group" id="verificationStep" style="display:none;">
+      <input type="text" id="verificationCode" placeholder="Verification Code">
+      <button onclick="verifyCode()">Verify Code</button>
+    </div>
+    <div class="input-group" id="passwordStep" style="display:none;">
+      <input type="password" id="userPassword" placeholder="Password">
+      <button onclick="register()">Register</button>
+    </div>
   </div>
 
   <div class="user-info-section" id="userInfo" style="display:none;">
@@ -248,41 +260,110 @@
     return url.searchParams.get(name);
   }
 
-  async function register() {
-    const userId = document.getElementById("userId").value.trim();
-    if (!userId) {
-      alert("Please enter your Telegram ID.");
+  // --- নতুন জাভাস্ক্রিপ্ট লজিক ---
+  let tempVerificationCode = "123456"; // ডেমো কোড। এটি আপনার সার্ভার থেকে পাঠানো হবে।
+
+  async function sendVerificationCode() {
+    const userGmail = document.getElementById("userGmail").value.trim();
+    if (!userGmail || !userGmail.includes('@')) {
+      alert("Please enter a valid Gmail address.");
       return;
     }
 
+    // backend-এ কোড পাঠানোর জন্য fetch কল
+    // await fetch(`${backendURL}/send_code.php`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email: userGmail })
+    // });
+
+    alert(`A verification code has been sent to ${userGmail}. Please check your email.`);
+    
+    // UI পরিবর্তন
+    document.getElementById("emailStep").style.display = "none";
+    document.getElementById("verificationStep").style.display = "block";
+  }
+
+  async function verifyCode() {
+    const enteredCode = document.getElementById("verificationCode").value.trim();
+    if (!enteredCode) {
+      alert("Please enter the verification code.");
+      return;
+    }
+
+    // backend-এ কোড যাচাই করার জন্য fetch কল
+    // const res = await fetch(`${backendURL}/verify_code.php`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ code: enteredCode })
+    // });
+    // const data = await res.json();
+    // if (!data.success) {
+    //   alert("Invalid verification code. Please try again.");
+    //   return;
+    // }
+
+    // ডেমো ভেরিফিকেশন (প্রকৃত সার্ভারে এটি থাকবে না)
+    if (enteredCode !== tempVerificationCode) {
+        alert("Invalid verification code. Please try again.");
+        return;
+    }
+
+    alert("Code verified successfully! Now set your password.");
+
+    // UI পরিবর্তন
+    document.getElementById("verificationStep").style.display = "none";
+    document.getElementById("passwordStep").style.display = "block";
+  }
+
+  async function register() {
+    const fullName = document.getElementById("fullName").value.trim();
+    const telegramUser = document.getElementById("telegramUser").value.trim();
+    const userGmail = document.getElementById("userGmail").value.trim();
+    const userPassword = document.getElementById("userPassword").value;
     const ref = getQueryParam("ref") || "";
 
+    if (!fullName || !telegramUser || !userGmail || !userPassword) {
+      alert("Please fill in all the details.");
+      return;
+    }
+
+    // backend-এ রেজিস্ট্রেশন ডেটা পাঠানোর জন্য fetch কল
     try {
         await fetch(`${backendURL}/register.php`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: userId, ref: ref })
+            body: JSON.stringify({ 
+                fullName: fullName, 
+                telegramUser: telegramUser, 
+                email: userGmail, 
+                password: userPassword,
+                ref: ref 
+            })
         });
-        loadDashboard(userId);
+        alert("Registration successful!");
+        loadDashboard(telegramUser);
     } catch (error) {
         console.error('Registration failed:', error);
         alert('Failed to register. Please try again.');
     }
   }
 
-  async function loadDashboard(userId) {
+  async function loadDashboard(telegramUser) {
+    document.getElementById("registrationForm").style.display = "none";
+    document.getElementById("userInfo").style.display = "block";
+
     try {
-        const res = await fetch(`${backendURL}/user.php?id=${userId}`);
+        const res = await fetch(`${backendURL}/user.php?id=${telegramUser}`);
         const data = await res.json();
         
-        document.getElementById("userInfo").style.display = "block";
-        document.getElementById("uidText").innerText = userId;
-        document.getElementById("refLink").value = `https://yourdomain.com/?ref=${userId}`;
+        document.getElementById("uidText").innerText = telegramUser;
+        document.getElementById("refLink").value = `https://yourdomain.com/?ref=${telegramUser}`;
         document.getElementById("refCount").innerText = data.referrals;
         document.getElementById("balance").innerText = parseFloat(data.balance).toFixed(2);
     } catch (error) {
         console.error('Failed to load dashboard data:', error);
-        alert('Failed to load dashboard. Please try again.');
+        //alert('Failed to load dashboard. Please try again.');
     }
   }
 
@@ -295,7 +376,7 @@
       alert("✅ Referral link copied!");
     } catch (err) {
       console.error('Fallback: Unable to copy link', err);
-      document.execCommand("copy"); // Fallback for older browsers
+      document.execCommand("copy");
       alert("✅ Referral link copied!");
     }
   }
