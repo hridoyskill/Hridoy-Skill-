@@ -74,24 +74,24 @@
 <body>
 
 <div class="container">
-  <h2>🔐 Refer And Earn</h2>
+  <h2> Refer And Earn</h2>
 
   <input type="text" id="userId" placeholder="Enter your Telegram ID">
-  <button onclick="register()">🚀 Register</button>
+  <button onclick="register()"> Register</button>
 
   <div class="info" id="userInfo" style="display:none;">
-    <p>👤 <strong>User ID:</strong> <span id="uidText"></span></p>
-    <p>🔗 <strong>Your Referral Link:</strong></p>
+    <p> <strong>User ID:</strong> <span id="uidText"></span></p>
+    <p> <strong>Your Referral Link:</strong></p>
     <input type="text" id="refLink" readonly>
-    <button onclick="copyRef()">📋 Copy Referral Link</button>
+    <button onclick="copyRef()"> Copy Referral Link</button>
 
-    <p>👥 <strong>Referrals:</strong> <span id="refCount">0</span></p>
-    <p>💰 <strong>Balance:</strong> $<span id="balance">0.00</span></p>
+    <p> <strong>Referrals:</strong> <span id="refCount">0</span></p>
+    <p> <strong>Balance:</strong> $<span id="balance">0.00</span></p>
   </div>
 
   <div class="ad-box">
-    <p>📢 Sponsored Ad</p>
-    <!-- ✅ Adsterra Banner Ad Code -->
+    <p> Sponsored Ad</p>
+    <!--  Adsterra Banner Ad Code -->
     <script type="text/javascript">
       atOptions = {
         'key' : '5a63a3b0428f2dcb8caf06988673186f',
@@ -103,11 +103,11 @@
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/5a63a3b0428f2dcb8caf06988673186f/invoke.js"></script>
 
-    <button class="visit-btn" onclick="visitAd()">🔗 Visit Ad Link</button>
+    <button class="visit-btn" onclick="visitAd()"> Visit Ad Link</button>
   </div>
 
   <div class="footer">
-    ⚠️ We do not pay for ad views or clicks.<br>
+     We do not pay for ad views or clicks.<br>
     Only real referrals are rewarded.
   </div>
 </div>
@@ -121,7 +121,7 @@
     }
     document.getElementById("userInfo").style.display = "block";
     document.getElementById("uidText").innerText = userId;
-    document.getElementById("refLink").value = `https://yoursite.com/?ref=${userId}`;
+    document.getElementById("refLink").value = `https://hridoy-skill-seven.vercel.app/?ref=${userId}`;
     // Demo static data
     document.getElementById("refCount").innerText = "0";
     document.getElementById("balance").innerText = "0.00";
@@ -131,7 +131,7 @@
     const refLink = document.getElementById("refLink");
     refLink.select();
     document.execCommand("copy");
-    alert("✅ Referral link copied!");
+    alert(" Referral link copied!");
   }
 
   function visitAd() {
