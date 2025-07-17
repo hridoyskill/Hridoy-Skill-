@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SafeEarn - Referral Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 420px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    button {
+      background: #0066ff;
+      color: white;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #0052cc;
+    }
+    .info {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #eaf4ff;
+    }
+    .info p {
+      margin: 10px 0;
+    }
+    .ad-box {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .visit-btn {
+      background: #28a745;
+      margin-top: 15px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🔐 Refer And Earn</h2>
+
+  <input type="text" id="userId" placeholder="Enter your Telegram ID">
+  <button onclick="register()">🚀 Register</button>
+
+  <div class="info" id="userInfo" style="display:none;">
+    <p>👤 <strong>User ID:</strong> <span id="uidText"></span></p>
+    <p>🔗 <strong>Your Referral Link:</strong></p>
+    <input type="text" id="refLink" readonly>
+    <button onclick="copyRef()">📋 Copy Referral Link</button>
+
+    <p>👥 <strong>Referrals:</strong> <span id="refCount">0</span></p>
+    <p>💰 <strong>Balance:</strong> $<span id="balance">0.00</span></p>
+  </div>
+
+  <div class="ad-box">
+    <p>📢 Sponsored Ad</p>
+    <!-- ✅ Adsterra Banner Ad Code -->
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '5a63a3b0428f2dcb8caf06988673186f',
+        'format' : 'iframe',
+        'height' : 60,
+        'width' : 468,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/5a63a3b0428f2dcb8caf06988673186f/invoke.js"></script>
+
+    <button class="visit-btn" onclick="visitAd()">🔗 Visit Ad Link</button>
+  </div>
+
+  <div class="footer">
+    ⚠️ We do not pay for ad views or clicks.<br>
+    Only real referrals are rewarded.
+  </div>
+</div>
+
+<script>
+  function register() {
+    const userId = document.getElementById("userId").value.trim();
+    if (!userId) {
+      alert("Please enter your Telegram ID.");
+      return;
+    }
+    document.getElementById("userInfo").style.display = "block";
+    document.getElementById("uidText").innerText = userId;
+    document.getElementById("refLink").value = `https://yoursite.com/?ref=${userId}`;
+    // Demo static data
+    document.getElementById("refCount").innerText = "0";
+    document.getElementById("balance").innerText = "0.00";
+  }
+
+  function copyRef() {
+    const refLink = document.getElementById("refLink");
+    refLink.select();
+    document.execCommand("copy");
+    alert("✅ Referral link copied!");
+  }
+
+  function visitAd() {
+    window.open("https://www.profitableratecpm.com/w4is34uz?key=b8910134612369c23f9602a3a6469bb0", "_blank");
+  }
+</script>
+
+</body>
+</html>
