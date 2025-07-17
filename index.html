@@ -1,97 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SafeEarn - Referral Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>SafeEarn Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #007bff;
+      --primary-hover: #0056b3;
+      --secondary-color: #28a745;
+      --secondary-hover: #218838;
+      --background-light: #f7f9fc;
+      --card-bg: #ffffff;
+      --text-color-dark: #343a40;
+      --text-color-light: #6c757d;
+      --border-color: #e9ecef;
+      --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
     * {
       box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
     body {
-      background: #f4f6f8;
+      background: var(--background-light);
       margin: 0;
-      padding: 0;
+      padding: 0 0 80px; /* নিচের নেভিগেশন বারের জন্য প্যাডিং */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-color-dark);
+      position: relative;
     }
-    .container {
-      max-width: 420px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.08);
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 20px;
-    }
-    input, button {
+    .dashboard-card {
       width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
+      max-width: 420px;
+      margin: 20px;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease-in-out;
     }
-    button {
-      background: #0066ff;
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .header h2 {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    .input-group {
+      margin-top: 15px;
+    }
+    .input-group input, .input-group button {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      transition: border-color 0.3s ease;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+    .input-group button {
+      background: var(--primary-color);
       color: white;
       cursor: pointer;
       border: none;
-      transition: 0.3s;
+      font-weight: 500;
+      margin-top: 12px;
     }
-    button:hover {
-      background: #0052cc;
+    .input-group button:hover {
+      background: var(--primary-hover);
     }
-    .info {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 10px;
-      background: #eaf4ff;
+    .user-info-section {
+      margin-top: 25px;
+      padding: 20px;
+      background: var(--background-light);
+      border-radius: 15px;
     }
-    .info p {
+    .user-info-section p {
+      display: flex;
+      justify-content: space-between;
       margin: 10px 0;
+      font-size: 0.95rem;
+      color: var(--text-color-dark);
     }
-    .ad-box {
+    .user-info-section p strong {
+      font-weight: 600;
+    }
+    #refLink {
+      margin-top: 5px;
+      padding: 12px 15px;
+    }
+    #copyRefBtn {
+      margin-top: 8px;
+    }
+    .ad-section {
       margin-top: 30px;
       text-align: center;
     }
-    .visit-btn {
-      background: #28a745;
+    .ad-section p {
+      color: var(--text-color-light);
+      font-size: 0.9rem;
+    }
+    .ad-visit-btn {
+      background: var(--secondary-color);
       margin-top: 15px;
+    }
+    .ad-visit-btn:hover {
+      background: var(--secondary-hover);
     }
     .footer {
       text-align: center;
-      font-size: 14px;
-      color: #888;
-      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--text-color-light);
+      margin-top: 25px;
+    }
+    .footer strong {
+        color: var(--text-color-dark);
+    }
+    /* নতুন নেভিগেশন বারের স্টাইল */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--card-bg);
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      z-index: 1000;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-color-light);
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-item:hover {
+      color: var(--primary-color);
+    }
+    .nav-item span:first-child {
+      font-size: 1.5rem;
+      line-height: 1;
+      margin-bottom: 4px;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h2> Refer And Earn</h2>
-
-  <input type="text" id="userId" placeholder="Enter your Telegram ID">
-  <button onclick="register()"> Register</button>
-
-  <div class="info" id="userInfo" style="display:none;">
-    <p> <strong>User ID:</strong> <span id="uidText"></span></p>
-    <p> <strong>Your Referral Link:</strong></p>
-    <input type="text" id="refLink" readonly>
-    <button onclick="copyRef()"> Copy Referral Link</button>
-
-    <p> <strong>Referrals:</strong> <span id="refCount">0</span></p>
-    <p> <strong>Balance:</strong> $<span id="balance">0.00</span></p>
+<div class="dashboard-card">
+  <div class="header">
+    <h2>🔐 SafeEarn Dashboard</h2>
   </div>
 
-  <div class="ad-box">
-    <p> Sponsored Ad</p>
-    <!--  Adsterra Banner Ad Code -->
+  <div class="input-group">
+    <input type="text" id="userId" placeholder="Enter your Telegram ID">
+    <button onclick="register()">🚀 Register</button>
+  </div>
+
+  <div class="user-info-section" id="userInfo" style="display:none;">
+    <p>
+      <span>👤 <strong>User ID:</strong></span>
+      <span id="uidText"></span>
+    </p>
+    <p>
+      <span>👥 <strong>Referrals:</strong></span>
+      <span id="refCount">0</span>
+    </p>
+    <p>
+      <span>💰 <strong>Balance:</strong></span>
+      <span id="balance">$0.00</span>
+    </p>
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+    <p style="margin-bottom: 5px;">🔗 <strong>Your Referral Link:</strong></p>
+    <input type="text" id="refLink" readonly>
+    <button id="copyRefBtn" onclick="copyRef()">📋 Copy Referral Link</button>
+  </div>
+
+  <div class="ad-section">
+    <p>📢 Sponsored Ad</p>
     <script type="text/javascript">
       atOptions = {
         'key' : '5a63a3b0428f2dcb8caf06988673186f',
@@ -103,35 +210,94 @@
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/5a63a3b0428f2dcb8caf06988673186f/invoke.js"></script>
 
-    <button class="visit-btn" onclick="visitAd()"> Visit Ad Link</button>
+    <button class="input-group ad-visit-btn" onclick="visitAd()">🔗 Visit Ad Link</button>
   </div>
 
   <div class="footer">
-     We do not pay for ad views or clicks.<br>
-    Only real referrals are rewarded.
+    ⚠️ We only reward real referrals. <br> <strong>No payment for ad views or clicks.</strong>
   </div>
 </div>
 
+<nav class="bottom-nav">
+    <a href="#" class="nav-item">
+        <span>🏠</span>
+        <span>Home</span>
+    </a>
+    <a href="#" class="nav-item">
+        <span>💰</span>
+        <span>Earn</span>
+    </a>
+    <a href="#" class="nav-item">
+        <span>🛠️</span>
+        <span>Support</span>
+    </a>
+    <a href="#" class="nav-item">
+        <span>👥</span>
+        <span>Roles</span>
+    </a>
+    <a href="#" class="nav-item">
+        <span>👤</span>
+        <span>Profile</span>
+    </a>
+</nav>
 <script>
-  function register() {
+  const backendURL = "https://yourdomain.com/api"; // আপনার সার্ভার অ্যাড্রেস
+
+  function getQueryParam(name) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(name);
+  }
+
+  async function register() {
     const userId = document.getElementById("userId").value.trim();
     if (!userId) {
       alert("Please enter your Telegram ID.");
       return;
     }
-    document.getElementById("userInfo").style.display = "block";
-    document.getElementById("uidText").innerText = userId;
-    document.getElementById("refLink").value = `https://hridoy-skill-seven.vercel.app/?ref=${userId}`;
-    // Demo static data
-    document.getElementById("refCount").innerText = "0";
-    document.getElementById("balance").innerText = "0.00";
+
+    const ref = getQueryParam("ref") || "";
+
+    try {
+        await fetch(`${backendURL}/register.php`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: userId, ref: ref })
+        });
+        loadDashboard(userId);
+    } catch (error) {
+        console.error('Registration failed:', error);
+        alert('Failed to register. Please try again.');
+    }
+  }
+
+  async function loadDashboard(userId) {
+    try {
+        const res = await fetch(`${backendURL}/user.php?id=${userId}`);
+        const data = await res.json();
+        
+        document.getElementById("userInfo").style.display = "block";
+        document.getElementById("uidText").innerText = userId;
+        document.getElementById("refLink").value = `https://yourdomain.com/?ref=${userId}`;
+        document.getElementById("refCount").innerText = data.referrals;
+        document.getElementById("balance").innerText = parseFloat(data.balance).toFixed(2);
+    } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+        alert('Failed to load dashboard. Please try again.');
+    }
   }
 
   function copyRef() {
     const refLink = document.getElementById("refLink");
     refLink.select();
-    document.execCommand("copy");
-    alert(" Referral link copied!");
+    refLink.setSelectionRange(0, 99999);
+    try {
+      navigator.clipboard.writeText(refLink.value);
+      alert("✅ Referral link copied!");
+    } catch (err) {
+      console.error('Fallback: Unable to copy link', err);
+      document.execCommand("copy"); // Fallback for older browsers
+      alert("✅ Referral link copied!");
+    }
   }
 
   function visitAd() {
