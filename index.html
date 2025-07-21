@@ -763,37 +763,43 @@
             if (users[userKey] && users[userKey].verificationCode === code) {
                 users[userKey].verified = true;
                 delete users[userKey].verificationCode;
-                localStorage.setItem('users', JSON.stringify(users));
-                localStorage.removeItem('pendingUser');
-                // If there's a referrer (by Telegram Chat ID)
-                let referralMessagePart = "";
+                
+                // Get the referrer's chat ID from the session, if it exists
                 const referrerChatIdFromSession = sessionStorage.getItem('tempReferrerChatId');
+
                 if (referrerChatIdFromSession) {
                     let referrerFound = false;
                     for (const userNameKey in users) {
-                        if (users[userNameKey].telegramChatId === referrerChatIdFromSession && userKey !== userNameKey) { // Ensure user doesn't refer themselves
-                            // Initialize new properties if they don't exist
-                            users[userNameKey].totalReferrals = users[userNameKey].totalReferrals || 0;
-                            users[userNameKey].lifetimeReferrals = users[userNameKey].lifetimeReferrals || 0;
-                            users[userNameKey].referredUsers = users[userNameKey].referredUsers || [];
+                        if (users[userNameKey].telegramChatId === referrerChatIdFromSession && userKey !== userNameKey) {
+                            // Found the referrer!
+                            const referrer = users[userNameKey];
+                            
+                            // Initialize referral properties if they don't exist
+                            referrer.totalReferrals = referrer.totalReferrals || 0;
+                            referrer.lifetimeReferrals = referrer.lifetimeReferrals || 0;
+                            referrer.referredUsers = referrer.referredUsers || [];
 
-                            users[userKey].referredBy = users[userNameKey].telegramUserName;
-                            users[userNameKey].balance += 0.020;
-                            users[userNameKey].totalReferrals++;
-                            users[userNameKey].lifetimeReferrals++;
-                            users[userNameKey].referredUsers.push(userKey);
-                            referralMessagePart = `\nReferred by: ${users[userNameKey].fullName} (Chat ID: ${referrerChatIdFromSession})\nReferral bonus paid to referrer.`;
+                            // Add referral bonus and increment counts
+                            referrer.balance += 0.020;
+                            referrer.totalReferrals++;
+                            referrer.lifetimeReferrals++;
+                            referrer.referredUsers.push(users[userKey].telegramUserName); // Store the referred user's username
+                            users[userKey].referredBy = referrer.telegramUserName;
+                            
+                            showFlashMessage(`Referral bonus of $0.020 has been added to @${referrer.telegramUserName}'s account.`);
                             referrerFound = true;
                             break;
                         }
                     }
                     if (!referrerFound) {
-                        referralMessagePart = `\nReferrer Chat ID (${referrerChatIdFromSession}) not found or invalid.`;
+                        showFlashMessage(`Referrer with Chat ID (${referrerChatIdFromSession}) not found.`);
                     }
-                } else {
-                    referralMessagePart = `\nNo referrer.`;
+                    sessionStorage.removeItem('tempReferrerChatId'); // Clear the session storage
                 }
-                saveUserData();
+
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.removeItem('pendingUser');
+                
                 showFlashMessage("Verification complete. Please login.");
                 document.getElementById('verificationPrompt').style.display = 'none';
                 document.getElementById('loginFormCard').style.display = 'block';
